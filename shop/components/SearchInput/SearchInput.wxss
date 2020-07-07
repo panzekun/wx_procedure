@@ -1,0 +1,13 @@
+.search_row {
+  height: 90rpx;
+  padding: 15rpx;
+  background-color: #eb4450;
+}
+.search_row .search_input {
+  border-radius: 10rpx;
+  background-color: #fff;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

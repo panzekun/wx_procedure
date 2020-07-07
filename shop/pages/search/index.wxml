@@ -1,0 +1,21 @@
+<view class="search">
+  <!-- 搜索框 -->
+  <view class="search_row">
+    <input value="{{inpValue}}" bindinput="handleInput" type="text" placeholder="请输入展示的总页数（整数）" />
+  </view>
+  <!-- 搜索结果 -->
+  <view class="list">
+    <block wx:for="{{list}}" wx:key="{{item}}">
+      <view class="list-item">
+        <view class="img">
+          <image src="{{item.img_url}}" mode="widthFix" />
+        </view>
+        <view>
+          <view class="text">{{item.name}}</view>
+          <view class="price">{{ item.price }}</view>
+          <view class="slogan">{{ item.slogan }}</view>
+        </view>
+      </view>
+    </block>
+  </view>
+</view>

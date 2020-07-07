@@ -1,0 +1,36 @@
+.search {
+  padding: 20rpx;
+  background-color: #eee;
+}
+.search .search_row {
+  display: flex;
+  justify-content: space-between;
+  height: 60rpx;
+}
+.search .search_row input {
+  height: 100%;
+  flex: 1;
+  text-align: center;
+  background-color: #fff;
+}
+.search .search_row .btn_cancel {
+  width: 30%;
+  height: 100%;
+  background-color: #fff;
+  border: 1px solid #999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.search .list {
+  padding: 10rpx 0;
+}
+.search .list .list-item {
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+
+}
+.list-item .img {
+  width: 20%;
+}

@@ -1,12 +1,49 @@
 {
-  "pages":[
-    "pages/index/index"
+  "pages": [
+    "pages/home/index",
+    "pages/category/index",
+    "pages/cart/index",
+    "pages/user/index",
+    "pages/search/index"
   ],
-  "window":{
-    "backgroundTextStyle":"light",
-    "navigationBarBackgroundColor": "#fff",
-    "navigationBarTitleText": "WeChat",
-    "navigationBarTextStyle":"black"
+  "window": {
+    "navigationBarTitleText": "从0到1实战微信小程序",
+    "navigationBarBackgroundColor": "#eb4450",
+    "navigationBarTextStyle": "black",
+    "backgroundColorTop": "#ffffff",
+    "backgroundColorBottom": "#ffffff",
+    "backgroundColor": "#ffffff"
+  },
+  "tabBar": {
+    "color": "#333333",
+    "selectedColor": "#f06c7a",
+    "borderStyle": "black",
+    "backgroundColor": "#ffffff",
+    "list": [{
+        "pagePath": "pages/home/index",
+        "iconPath": "static/tabBar/home.png",
+        "selectedIconPath": "static/tabBar/home-on.png",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/category/index",
+        "iconPath": "static/tabBar/category.png",
+        "selectedIconPath": "static/tabBar/category-on.png",
+        "text": "分类"
+      },
+      {
+        "pagePath": "pages/cart/index",
+        "iconPath": "static/tabBar/cart.png",
+        "selectedIconPath": "static/tabBar/cart-on.png",
+        "text": "购物车"
+      },
+      {
+        "pagePath": "pages/user/index",
+        "iconPath": "static/tabBar/user.png",
+        "selectedIconPath": "static/tabBar/user-on.png",
+        "text": "我的"
+      }
+    ]
   },
   "style": "v2",
   "sitemapLocation": "sitemap.json"
