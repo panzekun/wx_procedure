@@ -1,0 +1,118 @@
+<!-- pages/goods_detail/index.wxml -->
+<view class="goods_detail">
+  <!-- 头部-滚动渐变显示 -->
+  <view class="header" style="opacity: {{afterHeaderOpacity}}">
+    <view class="middle">
+      <view wx:for="{{anchorlist}}" class="{{selectAnchor===index?'on':''}}" :key="item" bindtap="handleToAnchor" data-index="{{index}}">
+        {{item.name}}
+      </view>
+    </view>
+  </view>
+  <scroll-view style="height: {{winHeight}}px" scroll-top="{{toView}}" scroll-y="true" scroll-with-animation="true" bindscroll='handelScroll'>
+    <!-- 轮播图 -->
+    <view class="goods-swiper">
+      <swiper class="" indicator-dots autoplay interval="5000">
+        <block wx:for="{{swiperList}}" wx:key="{{item.id}}">
+          <swiper-item item-id="">
+            <image class="" src="{{item.img}}" mode="widthFix" />
+          </swiper-item>
+        </block>
+      </swiper>
+    </view>
+    <!-- 商品信息 -->
+    <view class="info-box goods-info">
+      <view class="price">{{goodsData.price}}</view>
+      <view class="title">{{goodsData.name}}</view>
+    </view>
+    <!-- 服务规格 -->
+    <view class="info-box spec">
+      <view class="row">
+        <view class="text">服务</view>
+        <view class="content">
+          <view class="serviceitem" wx:for="{{services}}" wx:key="{{item.name}}">
+            {{item.name}}
+          </view>
+        </view>
+        <view class="arrow">
+          <text class="iconfont icon-arrow-right"></text>
+        </view>
+      </view>
+      <view class="row">
+        <view class="text">规格</view>
+        <view class="content">
+          <view class="sp">
+            <view class="{{index==selectSpec?'on':''}}" wx:for="{{spec}}" wx:key="{{item.name}}" bindtap="handleSpeci" data-index="{{index}}">
+              {{item}}
+            </view>
+          </view>
+        </view>
+        <view class="arrow">
+          <text class="iconfont icon-arrow-right"></text>
+        </view>
+      </view>
+      <view class="row">
+        <view class="text">数量</view>
+        <view class="content">
+          <div class="sub" bindtap="handleChangeNum" data-num="-1">
+            <text class="iconfont icon-jian"></text>
+          </div>
+          <view class="input">
+            <input type="number" value="{{inpValue}}" bindinput="handleInput" />
+          </view>
+          <div class="add" bindtap="handleChangeNum" data-num="+1">
+            <text class="iconfont icon-jia"></text>
+          </div>
+        </view>
+      </view>
+    </view>
+    <!-- 评论 -->
+    <view class="info-box comments " id="comments">
+      <view class="row">
+        <view class="text">商品评(108)</view>
+        <view class="arrow">
+          查看全部
+          <text class="iconfont icon-arrow-right"></text>
+        </view>
+      </view>
+      <view class="comment">
+        <view class="user-info">
+          <view class="face">
+            <image class="" src="{{comment.userface}}" mode="widthFix" />
+          </view>
+          <view class="username">{{comment.username}}</view>
+        </view>
+        <view class="content">{{comment.content}}</view>
+      </view>
+    </view>
+    <!-- 详情 -->
+    <view class="description">
+      <view class="title">———— 商品详情 ————</view>
+      <view class="content">
+        <rich-text nodes="{{descriptionStr}}"></rich-text>
+      </view>
+    </view>
+  </scroll-view>
+  <!-- 底部菜单 -->
+  <view class="footer">
+    <view class="icons">
+      <view class="box">
+        <view class="iconfont icon-share_icon"></view>
+        <button open-type="share">分享</button>
+        <view class="text">分享</view>
+      </view>
+      <view class="box">
+        <view class="iconfont icon-kefu"></view>
+        <button open-type="contact">客服</button>
+        <view class="text">客服</view>
+      </view>
+      <view class="box">
+        <view class="iconfont" class="{{isCollect?'iconfont icon-shoucang1':'iconfont icon-shoucang'}}" bindtap="handleItemCollect"></view>
+        <view class="text">{{isCollect?'已':''}}收藏</view>
+      </view>
+    </view>
+    <view class="btn">
+      <view class="joinCart">加入购物车</view>
+      <view class="buy">立即购买</view>
+    </view>
+  </view>
+</view>

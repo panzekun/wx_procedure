@@ -2,6 +2,6 @@
   "enablePullDownRefresh": true,
   "onReachBottomDistance": 50,
   "usingComponents": {
-    "search-input":"/components/SearchInput/SearchInput"
+    "search-input": "/components/SearchInput/SearchInput"
   }
 }

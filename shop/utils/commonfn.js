@@ -31,7 +31,7 @@ export function _throttle(fn, delay = 200) {
 export function _debounce(fn, wait = 200) {
   var wait = wait;
   var timer;
-  return function (){
+  return function () {
     var th = this;
     var args = arguments;
     if (timer) {

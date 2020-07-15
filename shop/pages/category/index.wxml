@@ -1,2 +1,32 @@
-<!--pages/category/index.wxml-->
-<text>pages/category/index.wxml</text>
+<!-- pages/category/index.wxml -->
+<view class="category">
+  <!-- 搜索框 开始 -->
+  <search-input></search-input>
+  <view class="category-list">
+    <!-- 左侧 菜单 -->
+    <scroll-view scroll-y class="left">
+      <block wx:for="{{menuList}}" wx:key="{{item}}">
+        <view bindtap="handleItemSelect" data-index="{{index}}" class="menu_item {{activeIndex==index?'active':''}} ">
+          <view class="block" hidden="{{activeIndex!==index}}"></view>
+          {{item}}
+        </view>
+      </block>
+    </scroll-view>
+    <!-- 右侧 内容 -->
+    <scroll-view scroll-y scroll-top="{{scrollTop}}" class="right">
+      <view class="banner">
+        <image src="{{goodsArr.banner}}" mode="widthFix"></image>
+      </view>
+      <view class="goods_content_wrap">
+        <block wx:for="{{goodsArr.list}}" wx:for-item="goodsItem" wx:for-index="goodsIndex" wx:key="{{goodsItem}}">
+          <!-- <navigator url="../goods_list/index?cat_id={{item2.cat_id}}"> -->
+          <view class="good_item">
+            <image src="{{goodsItem.img}}" mode="widthFix"></image>
+            <view class="goods_name">{{goodsItem.name}}</view>
+          </view>
+          <!-- </navigator> -->
+        </block>
+      </view>
+    </scroll-view>
+  </view>
+</view>

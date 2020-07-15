@@ -4,12 +4,13 @@
     "pages/category/index",
     "pages/cart/index",
     "pages/user/index",
+    "pages/goods_detail/index",
     "pages/search/index"
   ],
   "window": {
     "navigationBarTitleText": "从0到1实战微信小程序",
     "navigationBarBackgroundColor": "#eb4450",
-    "navigationBarTextStyle": "black",
+    "navigationBarTextStyle": "white",
     "backgroundColorTop": "#ffffff",
     "backgroundColorBottom": "#ffffff",
     "backgroundColor": "#ffffff"

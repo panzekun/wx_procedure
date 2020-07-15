@@ -1,13 +1,32 @@
-page,view,text,textarea,swiper,swiper-item,navigator,image{
+/*  阿里矢量图地址 */
+@import "/styles/iconfont.wxss";
+
+page,
+view,
+text,
+textarea,
+swiper,
+swiper-item,
+navigator,
+image {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   font-size: 28rpx;
- 
+
 }
-page{
+
+page {
   color: #666;
 }
-image{
+
+image {
   width: 100%;
+}
+
+/* 隐藏scroll-view 滚动条 */
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  color: transparent;
 }

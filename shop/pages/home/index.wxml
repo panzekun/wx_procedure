@@ -1,15 +1,14 @@
-<!--pages/home/index.wxml-->
-<page class="home">
+<!-- pages/home/index.wxml -->
+<view class="home">
   <!-- 搜索 -->
   <view class="shop-input">
     <search-input></search-input>
   </view>
-
   <!-- 轮播图 -->
   <view class="shop-swiper">
     <swiper class="" indicator-dots autoplay interval="5000">
       <block wx:for="{{swiperList}}" wx:key="{{item}}">
-        <swiper-item  item-id="">
+        <swiper-item item-id="">
           <image class="" src="{{item.url}}" mode="widthFix" />
         </swiper-item>
       </block>
@@ -28,7 +27,6 @@
       </view>
     </block>
   </view>
-
   <!-- 广告图 -->
   <view class="banner">
     <MarqueeUp />
@@ -36,7 +34,6 @@
       <image src="https://ae01.alicdn.com/kf/H5470c644e6454719a610620f1e6f67d9y.jpg" />
     </view>
   </view>
-
   <!-- 楼层数据 -->
   <view class="goods-list">
     <view class="title">
@@ -46,15 +43,17 @@
     </view>
     <view class="product-list">
       <block wx:for="{{productList}}" wx:key="{{item}}">
-        <view class="product">
-          <image src="{{item.img_url}}" />
+        <navigator class="product" url="../goods_detail/index?goods_id={{item.goods_id}}">
+          <!-- <view class="product"> -->
+          <image src="{{item.img_url}}" mode="widthFix" lazy-load='true' />
           <view class="name ellipsis">{{ item.name }}</view>
           <view class="info">
             <view class="price">{{ item.price }}</view>
             <view class="slogan">{{ item.slogan }}</view>
           </view>
-        </view>
+          <!-- </view> -->
+        </navigator>
       </block>
     </view>
   </view>
-</page>
+</view>

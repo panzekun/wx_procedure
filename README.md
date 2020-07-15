@@ -1,4 +1,4 @@
-# 手摸手实现一个电商-微信小程序（上）
+# 手摸手实现一个电商-微信小程序
 
 ## 1、创建小程序项目
 
@@ -932,5 +932,255 @@ Page({
       this.getProductList();
     }
   },
+```
+
+
+
+## 5、实现分类界面
+
+![](README_images/分类界面效果.png)
+
+> 分类界面比较简单，顶部搜索直接用之前的搜索组件，主要讲一下`scroll-view`
+
+### scroll-view组件
+
+> 可滚动视图区域。使用竖向滚动时，需要给`scroll-view`一个固定高度，通过 WXSS 设置 height。组件属性的长度单位默认为px，2.4.0 起支持传入单位(rpx/px)。
+
+| 属性            | 类型          | 默认值 | 必填 | 说明                                       |
+| --------------- | ------------- | ------ | ---- | ------------------------------------------ |
+| scroll-x        | boolean       | false  | 否   | 设置横向滚动                               |
+| scroll-y        | boolean       | false  | 否   | 设置纵向滚动                               |
+| upper-threshold | number/string | 50     | 否   | 距顶部/左边多远时，触发 scrolltoupper 事件 |
+| lower-threshold | number/string | 50     | 否   | 距底部/右边多远时，触发 scrolltolower 事件 |
+| scroll-top      | number/string | -      | 否   | 设置竖向滚动条位置（可以实现锚点定位）     |
+|                 |               |        |      |                                            |
+|                 |               |        |      |                                            |
+
+## 6、实现商品详情页
+
+
+
+### 小程序使用阿里巴巴矢量图
+
+> 1、[阿里巴巴矢量图官网](<https://www.iconfont.cn/home/index?spm=a313x.7781069.1998910419.2>)找到需要的图标,添加到项目。
+
+![](README_images/矢量图步骤1.png)
+
+![](README_images/矢量图步骤2.png)
+
+
+
+![](README_images/矢量图步骤3.png)
+
+
+
+![](README_images/矢量图步骤4.png)
+
+> 最后在`app.wxss` 引入
+
+```css
+/*  阿里矢量图地址 */
+@import "/styles/iconfont.wxss";
+
+page,
+view,
+text,
+textarea,
+swiper,
+swiper-item,
+navigator,
+image {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-size: 28rpx;
+
+}
+
+page {
+  color: #666;
+}
+
+image {
+  width: 100%;
+}
+```
+
+* 引入需要使用`@import`
+* 使用绝对路径，不要使用`./`相对路径
+
+> 页面使用
+
+```html
+   <!-- 
+      iconfont  必须的 
+	  icon-arrow-righ    图标的类名（在iconfont.wxss中可以找到）
+	-->
+<text class="iconfont icon-arrow-right"></text>
+```
+
+
+
+### 6.1、首页商品带参数跳转详情页
+
+```html
+<!-- pages/home/index.wxml -->
+<view class="product-list">
+      <block wx:for="{{productList}}" wx:key="{{item}}">
+        <navigator class="product" url="../goods_detail/index?goods_id={{item.goods_id}}">
+          <!-- <view class="product"> -->
+          <image src="{{item.img_url}}" mode="widthFix" lazy-load='true' />
+          <view class="name ellipsis">{{ item.name }}</view>
+          <view class="info">
+            <view class="price">{{ item.price }}</view>
+            <view class="slogan">{{ item.slogan }}</view>
+          </view>
+          <!-- </view> -->
+        </navigator>
+      </block>
+    </view>
+```
+
+**运用`navigator`跳转**：
+
+* ../goods_detail/index    跳转的相对路径；
+* ?goods_id={{item.goods_id}}   动态 传参数，
+
+#### 小程序获取url上面的参数
+
+* onLoad 自带一个 **options**入参 通过 `options.goods_id `获取
+
+```js
+// pages/goods_detail/index.js
+  /**
+   * 页面的初始数据
+   */
+  data: { },
+
+  /**
+   * 生命周期函数--监听页面加载
+   */
+  onLoad: function (options) {
+    // console.log(options)
+    //获取url传递的参数
+    let goods_id = options.goods_id
+  },
+
+```
+
+### 
+
+### 6.2、获取详情数据并动态设置界面标题
+
+> 调用之前封装好的 `request` 获取数据
+
+```js
+// pages/goods_detail/index.js
+import request from '../../utils/request';
+const api = new request();
+Page({
+
+  /**
+   * 页面的初始数据
+   */
+  data: {
+    // 轮播图
+    swiperList: [],
+    // 楼层图
+    descriptionImgs: [],
+    // 服务
+    services: [],
+    // 规格
+    spec: [],
+    // 评论
+    comment: null,
+  },
+  //缓存接口的数据
+  goodsData: null,
+  // 获取商品详情
+  getGoodsDetail(goods_id) {
+    api.postRequest(
+      'getGoodsDetail', {
+        goods_id
+      }
+    ).then(res => {
+      console.log(res);
+      this.goodsData = res.goodsDetail
+      let {
+        swiperList,
+        descriptionImgs,
+        comment,
+        services,
+        spec
+      } = this.goodsData;
+      this.setData({
+        swiperList,
+        descriptionImgs,
+        comment,
+        services,
+        spec,
+      });
+      console.log(this.data);
+      //动态设置标题
+      wx.setNavigationBarTitle({
+        title: this.goodsData.name
+      })
+
+    })
+  },
+  /**
+   * 生命周期函数--监听页面加载
+   */
+  onLoad: function (options) {
+    // console.log(options)
+    //获取url传递的参数
+    let goods_id = options.goods_id
+    this.getGoodsDetail(goods_id)
+  },
+})
+```
+
+> **小程序设置界面标题的两种方式**
+
+* 1、写死的方式（在json直接配置：） 
+
+  ```json
+  {
+   
+    "navigationBarTitleText": "标题"
+   
+  }
+  ```
+
+  
+
+* 2、动态修改的形式
+
+  ```js
+  onLoad: function (options) {
+       //动态设置标题
+      wx.setNavigationBarTitle({
+          title: this.goodsData.name
+        })
+    }6.3、swiper 实现轮播图
+  ```
+
+
+
+### 6.3、swiper实现轮播图
+
+> 上面已经调用接口获取到所有数据，所以直接使用上一节用到的`swiper`
+
+```html
+ <!-- 轮播图 -->
+  <view class="goods-swiper">
+    <swiper class="" indicator-dots autoplay interval="5000">
+      <block wx:for="{{swiperList}}" wx:key="{{item.id}}">
+        <swiper-item item-id="">
+          <image class="" src="{{item.img}}" mode="widthFix" />
+        </swiper-item>
+      </block>
+    </swiper>
+  </view>
 ```
 

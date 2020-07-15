@@ -13,6 +13,7 @@
 		"autoAudits": false,
 		"showShadowRootInWxmlPanel": true,
 		"scopeDataCheck": false,
+		"uglifyFileName": false,
 		"checkInvalidKey": true,
 		"checkSiteMap": true,
 		"uploadWithSourceMap": true,
@@ -24,12 +25,16 @@
 	},
 	"compileType": "miniprogram",
 	"libVersion": "2.11.3",
-	"appid": "wx01f1bb7a02940fa0",
-	"projectname": "%E5%95%86%E5%9F%8E%E6%A8%A1%E6%9D%BF",
+	"appid": "wxeb154d383c0957bd",
+	"projectname": "%E8%87%AA%E5%AD%A6%E7%94%A8",
+	"cloudfunctionTemplateRoot": "",
+	"watchOptions": {
+		"ignore": []
+	},
 	"debugOptions": {
 		"hidedInDevtools": []
 	},
-	"isGameTourist": false,
+	"scripts": {},
 	"simulatorType": "wechat",
 	"simulatorPluginLibVersion": {},
 	"condition": {
@@ -46,7 +51,6 @@
 			"list": []
 		},
 		"game": {
-			"currentL": -1,
 			"list": []
 		},
 		"gamePlugin": {
@@ -60,6 +64,21 @@
 					"id": -1,
 					"name": "pages/search/index",
 					"pathName": "pages/search/index",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "pages/category/index",
+					"pathName": "pages/category/index",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "pages/goods_detail/index",
+					"pathName": "pages/goods_detail/index",
+					"query": "goods_id=5",
 					"scene": null
 				}
 			]
