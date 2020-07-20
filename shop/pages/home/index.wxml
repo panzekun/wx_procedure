@@ -1,59 +1,64 @@
 <!-- pages/home/index.wxml -->
-<view class="home">
-  <!-- 搜索 -->
-  <view class="shop-input">
-    <search-input></search-input>
-  </view>
-  <!-- 轮播图 -->
-  <view class="shop-swiper">
-    <swiper class="" indicator-dots autoplay interval="5000">
-      <block wx:for="{{swiperList}}" wx:key="{{item}}">
-        <swiper-item item-id="">
-          <image class="" src="{{item.url}}" mode="widthFix" />
-        </swiper-item>
-      </block>
-    </swiper>
-  </view>
-  <!-- 分类数据 -->
-  <view class="category-list">
-    <block wx:for="{{categoryList}}" wx:key="{{item.name}}">
-      <view class="category" bindtap="hancleClickItem" data-itemList="{{item}}">
-        <view class="img">
-          <image src="{{item.image_src}}" mode="widthFix" />
-        </view>
-        <view>
-          <view class="text">{{item.name}}</view>
-        </view>
-      </view>
-    </block>
-  </view>
-  <!-- 广告图 -->
-  <view class="banner">
-    <MarqueeUp />
-    <view class="img-box">
-      <image src="https://ae01.alicdn.com/kf/H5470c644e6454719a610620f1e6f67d9y.jpg" />
+<page>
+  <!-- 引入骨架屏模版 -->
+  <skeleton wx:if="{{showSkeleton}}"></skeleton>
+  <view class="home skeleton">
+    <!-- 搜索 -->
+    <view class="shop-input">
+      <search-input class="skeleton-rect"></search-input>
     </view>
-  </view>
-  <!-- 楼层数据 -->
-  <view class="goods-list">
-    <view class="title">
-      <image src="https://ae01.alicdn.com/kf/H551edcdd154a4936a5762971504fb3e2r.jpg"></image>
-      猜你喜欢
-      <image src="https://ae01.alicdn.com/kf/H551edcdd154a4936a5762971504fb3e2r.jpg"></image>
+
+    <!-- 轮播图 -->
+    <view class="shop-swiper">
+      <swiper class="skeleton-rect" indicator-dots autoplay interval="5000">
+        <block wx:for="{{swiperList}}" wx:key="{{item}}">
+          <swiper-item item-id="">
+            <image class="" src="{{item.url}}" mode="widthFix" />
+          </swiper-item>
+        </block>
+      </swiper>
     </view>
-    <view class="product-list">
-      <block wx:for="{{productList}}" wx:key="{{item}}">
-        <navigator class="product" url="../goods_detail/index?goods_id={{item.goods_id}}">
-          <!-- <view class="product"> -->
-          <image src="{{item.img_url}}" mode="widthFix" lazy-load='true' />
-          <view class="name ellipsis">{{ item.name }}</view>
-          <view class="info">
-            <view class="price">{{ item.price }}</view>
-            <view class="slogan">{{ item.slogan }}</view>
+    <!-- 分类数据 -->
+    <view class="category-list">
+      <block wx:for="{{categoryList}}" wx:key="{{item.name}}">
+        <view class="category skeleton-radius" bindtap="hancleClickItem" data-itemList="{{item}}">
+          <view class="img">
+            <image src="{{item.image_src}}" mode="widthFix" />
           </view>
-          <!-- </view> -->
-        </navigator>
+          <view>
+            <view class="text">{{item.name}}</view>
+          </view>
+        </view>
       </block>
     </view>
+    <!-- 广告图 -->
+    <view class="banner">
+      <MarqueeUp />
+      <view class="img-box skeleton-rect">
+        <image src="https://ae01.alicdn.com/kf/H5470c644e6454719a610620f1e6f67d9y.jpg" />
+      </view>
+    </view>
+    <!-- 楼层数据 -->
+    <view class="goods-list">
+      <view class="title skeleton-rect">
+        <image src="https://ae01.alicdn.com/kf/H551edcdd154a4936a5762971504fb3e2r.jpg"></image>
+        猜你喜欢
+        <image src="https://ae01.alicdn.com/kf/H551edcdd154a4936a5762971504fb3e2r.jpg"></image>
+      </view>
+      <view class="product-list">
+        <block wx:for="{{productList}}" wx:key="{{item}}">
+          <navigator class="product" url="../goods_detail/index?goods_id={{item.goods_id}}">
+            <!-- <view class="product"> -->
+            <image src="{{item.img_url}}" mode="widthFix" lazy-load='true' />
+            <view class="name ellipsis">{{ item.name }}</view>
+            <view class="info">
+              <view class="price">{{ item.price }}</view>
+              <view class="slogan">{{ item.slogan }}</view>
+            </view>
+            <!-- </view> -->
+          </navigator>
+        </block>
+      </view>
+    </view>
   </view>
-</view>
+</page>

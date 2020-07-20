@@ -946,19 +946,300 @@ Page({
 
 > 可滚动视图区域。使用竖向滚动时，需要给`scroll-view`一个固定高度，通过 WXSS 设置 height。组件属性的长度单位默认为px，2.4.0 起支持传入单位(rpx/px)。
 
-| 属性            | 类型          | 默认值 | 必填 | 说明                                       |
-| --------------- | ------------- | ------ | ---- | ------------------------------------------ |
-| scroll-x        | boolean       | false  | 否   | 设置横向滚动                               |
-| scroll-y        | boolean       | false  | 否   | 设置纵向滚动                               |
-| upper-threshold | number/string | 50     | 否   | 距顶部/左边多远时，触发 scrolltoupper 事件 |
-| lower-threshold | number/string | 50     | 否   | 距底部/右边多远时，触发 scrolltolower 事件 |
-| scroll-top      | number/string | -      | 否   | 设置竖向滚动条位置（可以实现锚点定位）     |
-|                 |               |        |      |                                            |
-|                 |               |        |      |                                            |
+| 属性             | 类型          | 默认值 | 必填 | 说明                                                         |
+| ---------------- | ------------- | ------ | ---- | ------------------------------------------------------------ |
+| scroll-x         | boolean       | false  | 否   | 设置横向滚动                                                 |
+| scroll-y         | boolean       | false  | 否   | 设置纵向滚动                                                 |
+| upper-threshold  | number/string | 50     | 否   | 距顶部/左边多远时，触发 scrolltoupper 事件                   |
+| lower-threshold  | number/string | 50     | 否   | 距底部/右边多远时，触发 scrolltolower 事件                   |
+| scroll-top       | number/string | -      | 否   | 设置竖向滚动条位置（可以实现锚点定位）                       |
+| scroll-left      | number/string | -      | 否   | 设置横向滚动条位置                                           |
+| scroll-into-view | string        | -      | 否   | 值应为某子元素id（id不能以数字开头）。设置哪个方向可滚动，则在哪个方向滚动到该元素（可以实现锚点定位） |
+
+以上只列出常用的几个，更多详细请参阅微信小程序官方文档。
+
+
+
+> 页面比较简单，没啥难点，所以直接贴代码了，这里主要注意**每次点击左边切换菜单的时候，记得把右侧滚动条设置回到顶部即可**
+
+```html
+<!-- pages/category/index.wxml -->
+<view class="category">
+  <!-- 搜索框 开始 -->
+  <search-input></search-input>
+  <view class="category-list">
+    <!-- 左侧 菜单 -->
+    <scroll-view scroll-y class="left">
+      <block wx:for="{{menuList}}" wx:key="{{item}}">
+        <view bindtap="handleItemSelect" data-index="{{index}}" class="menu_item {{activeIndex==index?'active':''}} ">
+          <view class="block" hidden="{{activeIndex!==index}}"></view>
+          {{item}}
+        </view>
+      </block>
+    </scroll-view>
+    <!-- 右侧 内容 -->
+    <scroll-view scroll-y scroll-top="{{scrollTop}}" class="right">
+      <view class="banner">
+        <image src="{{goodsArr.banner}}" mode="widthFix"></image>
+      </view>
+      <view class="goods_content_wrap">
+        <block wx:for="{{goodsArr.list}}" wx:for-item="goodsItem" wx:for-index="goodsIndex" wx:key="{{goodsItem}}">
+          <!-- <navigator url="../goods_list/index?cat_id={{item2.cat_id}}"> -->
+          <view class="good_item">
+            <image src="{{goodsItem.img}}" mode="widthFix"></image>
+            <view class="goods_name">{{goodsItem.name}}</view>
+          </view>
+          <!-- </navigator> -->
+        </block>
+      </view>
+    </scroll-view>
+  </view>
+</view>
+```
+
+```js
+// pages/category/index.js
+Page({
+
+  /**
+   * 页面的初始数据
+   */
+  data: {
+    // 存放数据中的第一层大菜单
+    menuList: [],
+    // 右侧二层数据
+    goodsArr: [],
+    // 默认渲染数组的索引
+    activeIndex: 0,
+    // 设置右侧滚动条的滚动距离
+    scrollTop: 0
+  },
+  // 模拟-> 接口数据
+  catesData: [{
+      id: 1,
+      title: '家用电器',
+      children: {
+        banner: 'https://ae01.alicdn.com/kf/H1eeb66ae770b44ad9147c1123fb63a32P.jpg',
+        list: [{
+            name: '冰箱',
+            img: 'https://ae01.alicdn.com/kf/H6519f78b23f84696ac336a1348469386S.jpg'
+          },
+          {
+            name: '电视',
+            img: 'https://ae01.alicdn.com/kf/Hb2f3c3ed3fa247f68d8c6a2bf43fce86u.jpg'
+          },
+          {
+            name: '空调',
+            img: 'https://ae01.alicdn.com/kf/H0590f0b88a9d415f8076934dac81868fh.jpg'
+          },
+          {
+            name: '洗衣机',
+            img: 'https://ae01.alicdn.com/kf/H470f0335623f48c389c628594c74eb83r.jpg'
+          },
+          {
+            name: '风扇',
+            img: 'https://ae01.alicdn.com/kf/Hc5c1ba47e73341faa68965bf8dbfcf3ac.jpg'
+          },
+          {
+            name: '燃气灶',
+            img: 'https://ae01.alicdn.com/kf/Hc4cadacbc4d0465fbf86e72d78fa0e195.jpg'
+          },
+          {
+            name: '热水器',
+            img: 'https://ae01.alicdn.com/kf/H086fbf07f0414749b86ec0631d903cebu.jpg'
+          },
+          {
+            name: '电吹风',
+            img: 'https://ae01.alicdn.com/kf/Ha21fd4b970024b189ff3cf0475703d2dJ.jpg'
+          },
+          {
+            name: '电饭煲',
+            img: 'https://ae01.alicdn.com/kf/Hc6feda63d9924ea4a1b0959835a0ba80O.jpg'
+          },
+          {
+            name: '燃气灶',
+            img: 'https://ae01.alicdn.com/kf/Hc4cadacbc4d0465fbf86e72d78fa0e195.jpg'
+          },
+          {
+            name: '热水器',
+            img: 'https://ae01.alicdn.com/kf/H086fbf07f0414749b86ec0631d903cebu.jpg'
+          },
+          {
+            name: '电吹风',
+            img: 'https://ae01.alicdn.com/kf/Ha21fd4b970024b189ff3cf0475703d2dJ.jpg'
+          },
+          {
+            name: '电饭煲',
+            img: 'https://ae01.alicdn.com/kf/Hc6feda63d9924ea4a1b0959835a0ba80O.jpg'
+          },
+          {
+            name: '燃气灶',
+            img: 'https://ae01.alicdn.com/kf/Hc4cadacbc4d0465fbf86e72d78fa0e195.jpg'
+          },
+          {
+            name: '热水器',
+            img: 'https://ae01.alicdn.com/kf/H086fbf07f0414749b86ec0631d903cebu.jpg'
+          },
+          {
+            name: '电吹风',
+            img: 'https://ae01.alicdn.com/kf/Ha21fd4b970024b189ff3cf0475703d2dJ.jpg'
+          },
+          {
+            name: '电饭煲',
+            img: 'https://ae01.alicdn.com/kf/Hc6feda63d9924ea4a1b0959835a0ba80O.jpg'
+          },
+        ]
+      }
+    },
+    {
+      id: 2,
+      title: '办公用品',
+      children: {
+        banner: 'https://ae01.alicdn.com/kf/H6006d943348f4b5b878ec309b3730959p.jpg',
+        list: [{
+            name: '打印机',
+            img: 'https://ae01.alicdn.com/kf/H6519f78b23f84696ac336a1348469386S.jpg'
+          },
+          {
+            name: '路由器',
+            img: 'https://ae01.alicdn.com/kf/Hb2f3c3ed3fa247f68d8c6a2bf43fce86u.jpg'
+          },
+          {
+            name: '扫描仪',
+            img: 'https://ae01.alicdn.com/kf/H0590f0b88a9d415f8076934dac81868fh.jpg'
+          },
+          {
+            name: '投影仪',
+            img: 'https://ae01.alicdn.com/kf/H470f0335623f48c389c628594c74eb83r.jpg'
+          },
+          {
+            name: '墨盒',
+            img: 'https://ae01.alicdn.com/kf/Hc5c1ba47e73341faa68965bf8dbfcf3ac.jpg'
+          },
+          {
+            name: '纸类',
+            img: 'https://ae01.alicdn.com/kf/Hc4cadacbc4d0465fbf86e72d78fa0e195.jpg'
+          }
+        ]
+      }
+    },
+    {
+      id: 3,
+      title: '日常用品',
+      children: {
+        banner: 'https://ae01.alicdn.com/kf/H6006d943348f4b5b878ec309b3730959p.jpg',
+        list: [{
+            name: '茶具',
+            img: 'https://ae01.alicdn.com/kf/H6519f78b23f84696ac336a1348469386S.jpg'
+          },
+          {
+            name: '花瓶',
+            img: 'https://ae01.alicdn.com/kf/Hb2f3c3ed3fa247f68d8c6a2bf43fce86u.jpg'
+          },
+          {
+            name: '纸巾',
+            img: 'https://ae01.alicdn.com/kf/H0590f0b88a9d415f8076934dac81868fh.jpg'
+          },
+          {
+            name: '毛巾',
+            img: 'https://ae01.alicdn.com/kf/H470f0335623f48c389c628594c74eb83r.jpg'
+          },
+          {
+            name: '牙膏',
+            img: 'https://ae01.alicdn.com/kf/Hc5c1ba47e73341faa68965bf8dbfcf3ac.jpg'
+          },
+          {
+            name: '保鲜膜',
+            img: 'https://ae01.alicdn.com/kf/Hc4cadacbc4d0465fbf86e72d78fa0e195.jpg'
+          },
+          {
+            name: '保鲜袋',
+            img: 'https://ae01.alicdn.com/kf/H086fbf07f0414749b86ec0631d903cebu.jpg'
+          }
+        ]
+      }
+    },
+    {
+      id: 4,
+      title: '蔬菜水果',
+      children: {
+        banner: 'https://ae01.alicdn.com/kf/H9450011bbd2e480882aa986c8ceaa312i.jpg',
+        list: [{
+            name: '苹果',
+            img: 'https://ae01.alicdn.com/kf/H6519f78b23f84696ac336a1348469386S.jpg'
+          },
+          {
+            name: '芒果',
+            img: 'https://ae01.alicdn.com/kf/Hb2f3c3ed3fa247f68d8c6a2bf43fce86u.jpg'
+          },
+          {
+            name: '椰子',
+            img: 'https://ae01.alicdn.com/kf/H0590f0b88a9d415f8076934dac81868fh.jpg'
+          },
+          {
+            name: '橙子',
+            img: 'https://ae01.alicdn.com/kf/H470f0335623f48c389c628594c74eb83r.jpg'
+          },
+          {
+            name: '奇异果',
+            img: 'https://ae01.alicdn.com/kf/Hc5c1ba47e73341faa68965bf8dbfcf3ac.jpg'
+          },
+          {
+            name: '玉米',
+            img: 'https://ae01.alicdn.com/kf/Hc4cadacbc4d0465fbf86e72d78fa0e195.jpg'
+          },
+          {
+            name: '百香果',
+            img: 'https://ae01.alicdn.com/kf/H086fbf07f0414749b86ec0631d903cebu.jpg'
+          }
+        ]
+      }
+    },
+  ],
+  // 左侧菜单被点击
+  handleItemSelect(e) {
+    const {
+      index
+    } = e.currentTarget.dataset;
+    const goodsArr = this.catesData[index].children;
+    // 切换菜单同时 把右侧的滚动条 设置回到顶部 
+    const scrollTop = 0;
+    this.setData({
+      activeIndex: index,
+      scrollTop,
+      goodsArr,
+    })
+  },
+  /**
+   * 生命周期函数--监听页面加载
+   */
+  onLoad: function (options) {
+    const menuList = this.catesData.map(v => v.title);
+    const goodsArr = this.catesData[this.data.activeIndex].children;
+    this.setData({
+      menuList,
+      goodsArr,
+    })
+  },
+})
+```
+
+
 
 ## 6、实现商品详情页
 
+> 效果图先上
 
+![](README_images/商品详情效果图.gif)
+
+### 功能分析
+
+1. 头部导航、锚点定位；
+2. 轮播图；
+3. 服务，规格；
+4. 商品评论；
+5. 商品介绍楼层；
+6. 底部导航（分析、客服、收藏、加入购物车，立即购买功能）；
 
 ### 小程序使用阿里巴巴矢量图
 
@@ -1021,7 +1302,7 @@ image {
 
 
 
-### 6.1、首页商品带参数跳转详情页
+### 首页商品带参数跳转详情页
 
 ```html
 <!-- pages/home/index.wxml -->
@@ -1046,7 +1327,7 @@ image {
 * ../goods_detail/index    跳转的相对路径；
 * ?goods_id={{item.goods_id}}   动态 传参数，
 
-#### 小程序获取url上面的参数
+### 小程序获取url上面的参数
 
 * onLoad 自带一个 **options**入参 通过 `options.goods_id `获取
 
@@ -1070,7 +1351,7 @@ image {
 
 ### 
 
-### 6.2、获取详情数据并动态设置界面标题
+### 获取详情数据并动态设置界面标题
 
 > 调用之前封装好的 `request` 获取数据
 
@@ -1162,12 +1443,12 @@ Page({
       wx.setNavigationBarTitle({
           title: this.goodsData.name
         })
-    }6.3、swiper 实现轮播图
+    }
   ```
 
 
 
-### 6.3、swiper实现轮播图
+### swiper实现轮播图
 
 > 上面已经调用接口获取到所有数据，所以直接使用上一节用到的`swiper`
 
@@ -1183,4 +1464,413 @@ Page({
     </swiper>
   </view>
 ```
+
+### 商品信息、服务规格、评论
+
+> 也是一些基本的样式，直接一把索了，这里的 商品数量其实可以封装成一个小组件，因为后续购物车可能也会用到，这里我先就不封装了
+
+### 商品详情楼层图
+
+> 一般详情楼层图都是图片，这里模仿后端返回`html`的数据，使用微信小程序的`rich-text`解析渲染即可
+
+#### rich-text
+
+> 富文本标签
+
+可以将字符串解析成 对应标签，类似 vue中 `v-html`功能
+
+>  **nodes属性**
+
+`nodes`属性支持 `字符串` 和   `标签节点数组 ` 
+
+| 属性     | 说明       | 类型   | 必填 | 备注                                     |
+| -------- | ---------- | ------ | ---- | ---------------------------------------- |
+| name     | 标签名     | string | 是   | 支持部分受信任的 HTML 节点               |
+| attrs    | 属性       | object | 否   | 支持部分受信任的属性，遵循 Pascal 命名法 |
+| children | 子节点列表 | array  | 否   | 结构和 nodes 一致                        |
+
+**文本节点：type = text**
+
+| 属性 | 说明 | 类型   | 必填 | 备注         |
+| ---- | ---- | ------ | ---- | ------------ |
+| text | 文本 | string | 是   | 支持entities |
+
+**注意：**
+
+- `nodes`  不推荐使用 `String` 类型，性能会有所下降,并且nodes接收的是 html 标签，即 `<div><p>正常html标签</p></div>`。
+- `rich-text`  组件内屏蔽所有节点的事件。
+- `attrs` 属性不支持 id ，支持 class 。
+- `name` 属性大小写不敏感。
+- 如果使用了不受信任的 `HTML` 节点，该节点及其所有子节点将会被移除。
+- `img` 标签仅支持网络图片。
+
+### 实现头部导航渐变以及锚点定位功能
+
+**功能分析：**
+
+1. 头部渐变效果，通过动态设置样式的`opacity`显示隐藏，技术点（动态行内样式）
+2. 锚点定位，整个界面使用`scroll-view`包裹，点击通过 `scroll-top`属性实现，**注意scroll-view 需要一个固定高度，这里界面楼层是动态获取的，所以获取高度要在详情接口里面执行**
+3. 页面滚动，选中头部对应模块
+
+> **先实现锚点 导航渐变 `afterHeaderOpacity`先写死 1**
+
+**代码实现：**  
+
+```html
+<!-- pages/goods_detail/index.wxml -->
+<view class="goods_detail">
+  <!-- 头部-滚动渐变显示 -->
+  <view class="header" style="opacity: {{afterHeaderOpacity}}">
+    <view class="middle">
+      <view wx:for="{{anchorlist}}" class="{{selectAnchor===index?'on':''}}" :key="item" bindtap="handleToAnchor" data-index="{{index}}">
+        {{item.name}}
+      </view>
+    </view>
+  </view>
+    <!--滚动主体内容 -->
+  <scroll-view style="height: {{winHeight}}px" scroll-top="{{toView}}" scroll-y="true" scroll-with-animation="true" bindscroll='handelScroll'>
+    <!-- 轮播图 -->
+    <view class="goods-swiper">
+      <swiper class="" indicator-dots autoplay interval="5000">
+        <block wx:for="{{swiperList}}" wx:key="{{item.id}}">
+          <swiper-item item-id="">
+            <image class="" src="{{item.img}}" mode="widthFix" />
+          </swiper-item>
+        </block>
+      </swiper>
+    </view>
+    <!-- 商品信息 -->
+    <view class="info-box goods-info">
+      <view class="price">{{goodsData.price}}</view>
+      <view class="title">{{goodsData.name}}</view>
+    </view>
+    <!-- 服务规格 -->
+    <view class="info-box spec">
+      <view class="row">
+        <view class="text">服务</view>
+        <view class="content">
+          <view class="serviceitem" wx:for="{{services}}" wx:key="{{item.name}}">
+            {{item.name}}
+          </view>
+        </view>
+        <view class="arrow">
+          <text class="iconfont icon-arrow-right"></text>
+        </view>
+      </view>
+      <view class="row">
+        <view class="text">规格</view>
+        <view class="content">
+          <view class="sp">
+            <view class="{{index==selectSpec?'on':''}}" wx:for="{{spec}}" wx:key="{{item.name}}" bindtap="handleSpeci" data-index="{{index}}">
+              {{item}}
+            </view>
+          </view>
+        </view>
+        <view class="arrow">
+          <text class="iconfont icon-arrow-right"></text>
+        </view>
+      </view>
+      <view class="row">
+        <view class="text">数量</view>
+        <view class="content">
+          <div class="sub" bindtap="handleChangeNum" data-num="-1">
+            <text class="iconfont icon-jian"></text>
+          </div>
+          <view class="input">
+            <input type="number" value="{{inpValue}}" bindinput="handleInput" />
+          </view>
+          <div class="add" bindtap="handleChangeNum" data-num="+1">
+            <text class="iconfont icon-jia"></text>
+          </div>
+        </view>
+      </view>
+    </view>
+    <!-- 评论 -->
+    <view class="info-box comments " id="comments">
+      <view class="row">
+        <view class="text">商品评论(108)</view>
+        <view class="arrow">
+          查看全部
+          <text class="iconfont icon-arrow-right"></text>
+        </view>
+      </view>
+      <view class="comment">
+        <view class="user-info">
+          <view class="face">
+            <image class="" src="{{comment.userface}}" mode="widthFix" />
+          </view>
+          <view class="username">{{comment.username}}</view>
+        </view>
+        <view class="content">{{comment.content}}</view>
+      </view>
+    </view>
+    <!-- 详情楼层 -->
+    <view class="description">
+      <view class="title">———— 商品详情 ————</view>
+      <view class="content">
+        <rich-text nodes="{{descriptionStr}}"></rich-text>
+      </view>
+    </view>
+  </scroll-view>
+</view>
+```
+
+#### 动态设置 `scroll-view`高度
+
+> **通过`wx.getSystemInfoSync` 获取**
+
+```js
+ let sysInfo = wx.getSystemInfoSync();
+ let winHeight = sysInfo.windowHeight;
+```
+
+****
+
+**常用属性：**
+
+| 属性            | 类型   | 说明                   |
+| --------------- | ------ | ---------------------- |
+| brand           | string | 设备品牌               |
+| model           | string | 设备型号               |
+| pixelRatio      | number | 设备像素比             |
+| screenWidth     | number | 屏幕宽度，单位px       |
+| screenHeight    | number | 屏幕高度，单位px       |
+| windowWidth     | number | 可使用窗口宽度，单位px |
+| windowHeight    | number | 可使用窗口高度，单位px |
+| statusBarHeight | number | 状态栏的高度，单位px   |
+
+
+
+#### 计算锚点高度
+
+> **通过wx.createSelectorQuery().selectAll('选择器').boundingClientRect   来获取到元素的信息**
+
+```js
+  // 计算锚点高度
+  calcAnchor() {
+    let anchorlist = [{
+        name: '主图',
+        top: 0,
+      },
+      {
+        name: '评价',
+        top: 0,
+      },
+      {
+        name: '详情',
+        top: 0,
+      }
+    ];
+    let query = wx.createSelectorQuery().in(this);
+    query.select('#comments').boundingClientRect((rect) => {
+      console.log(rect);
+      let headerHeight = 45; //头部高度
+      anchorlist[1].top = rect.top - headerHeight;
+      anchorlist[2].top = rect.bottom - headerHeight;
+      this.setData({
+        anchorlist
+      })
+    }).exec()
+  },
+```
+
+>   query.select ，data的每一项有以下属性
+
+* dataset  ------节点的自定义属性；
+* left------节点的左边界坐标；
+* right------节点的右边界坐标；
+* top------节点的上边界坐标；
+* bottom------节点的下边界坐标；
+* width------节点的宽度；
+* height------节点的高度；
+
+**query.selectAll()可以查找多个同class类名的元素 ，返回一个数组，数组的每一项同上**
+
+> `handleToAnchor`实现跳转锚点
+
+```js
+  // 跳转锚点
+  handleToAnchor(e) {
+    //获取自定义属性
+    let selectAnchor = e.currentTarget.dataset.index;
+    this.setData({
+      selectAnchor,//选中的锚点
+      toView: this.data.anchorlist[selectAnchor].top //锚点对应的top(scroll-top="{{toView}}")
+    })
+  },
+```
+
+至此锚点功能已经实现，点击头部不同标签自动跳转到对应模块。
+
+
+
+> **实现导航渐变以及滚动界面选中标签**
+
+通过监听`scroll-view`的 `bindscroll`事件，获取滚动的距离，动态设置`afterHeaderOpacity`以及`selectAnchor`
+
+```js
+  // 监听页面滚动事件
+  handelScroll(e) {
+    let scrollTop = e.detail.scrollTop;
+
+    //锚点切换
+    let selectAnchor = scrollTop >= this.data.anchorlist[2].top ? 2 : scrollTop >= this.data.anchorlist[1].top ? 1 : 0;
+    //实现导航栏渐变
+    let tmpY = 375; //轮播图高度
+    scrollTop = scrollTop > tmpY ? 375 : scrollTop;
+    let afterHeaderOpacity = scrollTop * (1 / tmpY);
+    this.setData({
+      selectAnchor,
+      afterHeaderOpacity
+    })
+  },
+```
+
+
+
+### 实现底部导航
+
+> **底部导航目前只实现了分享、客服、收藏功能，购物车功能留到下一期哦**
+
+
+
+```html
+<!-- pages/goods_detail/index.wxml -->
+<view>
+.......
+
+ <!-- 底部菜单 -->
+  <view class="footer">
+    <view class="icons">
+      <view class="box">
+        <view class="iconfont icon-share_icon"></view>
+        <button open-type="share">分享</button>
+        <view class="text">分享</view>
+      </view>
+      <view class="box">
+        <view class="iconfont icon-kefu"></view>
+        <button open-type="contact">客服</button>
+        <view class="text">客服</view>
+      </view>
+      <view class="box">
+        <view class="iconfont" class="{{isCollect?'iconfont icon-shoucang1':'iconfont icon-shoucang'}}" bindtap="handleItemCollect"></view>
+        <view class="text">{{isCollect?'已':''}}收藏</view>
+      </view>
+    </view>
+    <view class="btn">
+      <view class="joinCart">加入购物车</view>
+      <view class="buy">立即购买</view>
+    </view>
+  </view>
+</view>
+```
+
+
+
+> 分享，客服功能主要是通过`button` 组件实现，具体属性如下：
+
+#### button
+
+| 属性      | 类型    | 默认值  | 必填 | 说明                                                         |
+| --------- | ------- | ------- | ---- | ------------------------------------------------------------ |
+| size      | string  | default | 否   | 按钮的大小                                                   |
+| type      | string  | default | 否   | 按钮的样式类型                                               |
+| plain     | boolean | false   | 否   | 按钮是否镂空，背景色透明                                     |
+| disabled  | boolean | false   | 否   | 是否禁用                                                     |
+| loading   | boolean | false   | 否   | 名称前是否带 loading 图标                                    |
+| form-type | string  |         | 否   | 用于 [``](https://developers.weixin.qq.com/miniprogram/dev/component/form.html) 组件，点击分别会触发 [``](https://developers.weixin.qq.com/miniprogram/dev/component/form.html) 组件的 submit/reset 事件 |
+| open-type | string  |         | 否   | 微信开放能力                                                 |
+
+**size 的合法值**
+
+| 值      | 说明     |
+| ------- | -------- |
+| default | 默认大小 |
+| mini    | 小尺寸   |
+
+**type 的合法值**
+
+| 值      | 说明 |
+| ------- | ---- |
+| primary | 绿色 |
+| default | 白色 |
+| warn    | 红色 |
+
+**form-type 的合法值**
+
+| 值     | 说明     |
+| ------ | -------- |
+| submit | 提交表单 |
+| reset  | 重置表单 |
+
+**open-type 的合法值**
+
+| 值             | 说明                                                         |
+| -------------- | ------------------------------------------------------------ |
+| contact        | 打开客服会话，如果用户在会话中点击消息卡片后返回小程序，可以从 bindcontact 回调中获得具体信息， |
+| share          | 触发用户转发，使用前建议先阅读使用指引                       |
+| getPhoneNumber | 获取用户手机号，可以从bindgetphonenumber回调中获取到用户信息， |
+| getUserInfo    | 获取用户信息，可以从bindgetuserinfo回调中获取到用户信息      |
+| launchApp      | 打开APP，可以通过app-parameter属性设定向APP传的参数          |
+| openSetting    | 打开授权设置页                                               |
+| feedback       | 打开“意见反馈”页面，用户可提交反馈内容并上传日志，开发者可以登录*小程序管理后台*、后进入左侧菜单“客服反馈”页面获取到反馈内容 |
+
+> 收藏功能实现，使用`setStorageSync` 微信小程序的本地缓存实现
+
+```js
+ // 收藏
+  handleItemCollect() {
+    // 页面的提示
+    let title = "收藏成功"
+    // 小程序 获取本地存储的api 也可能是空字符串 ""
+    let collect = wx.getStorageSync("collect") || {};
+
+    // 切换页面收藏效果
+    let {
+      isCollect
+    } = this.data;
+
+    isCollect = !isCollect;
+    // 页面效果已经实现
+    this.setData({
+      isCollect
+    });
+    // 本地存储中的数据还没同步
+    if (isCollect) {
+      // 要收藏
+      // 给收藏 大 对象赋值
+      collect[this.goods_id] = this.data.goodsData;
+    } else {
+      // 要删除属性
+      delete collect[this.goods_id];
+      title = "取消收藏";
+    }
+    // 收藏成功
+    wx.showToast({
+      title: title,
+      icon: 'none',
+      duration: 1500,
+      // 当前组件显示的时候 用户无法再点击页面的其他按钮
+      mask: true
+    });
+
+    // 设置到 本地存储当中
+    wx.setStorageSync("collect", collect)
+  },
+```
+
+**小程序的本地存储，可以存储任意类型的数据，不用像H5 存储一样使用`JSON.stringify`转换，可以直接读取**
+
+带`Sync`的是同步方法，反之异步
+
+| 方法                                 | 作用 | 示例                                                         |
+| ------------------------------------ | ---- | ------------------------------------------------------------ |
+| setStorageSync(string key, any data) | 存储 | wx.setStorageSync('key', 'value')                            |
+| setStorage                           | 存储 | wx.setStorage({key:"key",data:"value"})                      |
+| getStorageSync(string key)           | 读取 | value = wx.getStorageSync('key')                             |
+| getStorage                           | 读取 | wx.getStorage({   key: 'key',   success (res) {     console.log(res.data)   } }) |
+| removeStorageSync(string key)        | 删除 | wx.removeStorageSync('key')                                  |
+| removeStorage                        | 删除 | wx.removeStorage({   key: 'key',   success (res) {     console.log(res) } }) |
+| clearStorageSync()                   | 清空 | wx.clearStorageSync()                                        |
+| clearStorage                         | 清空 | wx.clearStorage()                                            |
 

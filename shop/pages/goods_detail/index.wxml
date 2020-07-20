@@ -8,6 +8,7 @@
       </view>
     </view>
   </view>
+  <!-- 滚动主体内容 -->
   <scroll-view style="height: {{winHeight}}px" scroll-top="{{toView}}" scroll-y="true" scroll-with-animation="true" bindscroll='handelScroll'>
     <!-- 轮播图 -->
     <view class="goods-swiper">
@@ -68,7 +69,7 @@
     <!-- 评论 -->
     <view class="info-box comments " id="comments">
       <view class="row">
-        <view class="text">商品评(108)</view>
+        <view class="text">商品评论(108)</view>
         <view class="arrow">
           查看全部
           <text class="iconfont icon-arrow-right"></text>
@@ -84,7 +85,7 @@
         <view class="content">{{comment.content}}</view>
       </view>
     </view>
-    <!-- 详情 -->
+    <!-- 详情楼层 -->
     <view class="description">
       <view class="title">———— 商品详情 ————</view>
       <view class="content">

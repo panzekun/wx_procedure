@@ -1,4 +1,9 @@
 /* pages/home/index.wxss */
+.shop-input{
+  padding: 0 15rpx;
+  margin-bottom: 10rpx;
+  background-color: #eb4450;
+}
 swiper {
   height: 260rpx;
 }

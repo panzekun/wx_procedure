@@ -1,0 +1,5 @@
+<!-- components/skeleboxSkeleton.wxml -->
+<view class="skelebox-skeleton-cmomon skelebox-skeleton-box" style="width: {{ winWidth }};height:{{winHeight}}; background-color: {{backgroundColor}}">
+		<view class="skelebox-skeleton-cmomon" wx:for="{{skeletonElements}}" key="{{index}}" style="width:{{item.width +'px'}};height:{{item.height +'px'}};left:{{item.left +'px'}};top:{{item.top +'px'}};background-color:{{skeletonBgColor}};border-radius:5px}}"></view>
+		<view class="skelebox-loading" class="{{getLoadingType(loadingType)}}" wx:if="{{isLoading}}"></view>
+</view>

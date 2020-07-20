@@ -5,7 +5,6 @@ import {
   _debounce
 } from "../../utils/commonfn";
 Page({
-
   /**
    * 页面的初始数据
    */
@@ -102,10 +101,11 @@ Page({
   }, 800),
   // 跳转锚点
   handleToAnchor(e) {
+    //获取自定义属性
     let selectAnchor = e.currentTarget.dataset.index;
     this.setData({
-      selectAnchor,
-      toView: this.data.anchorlist[selectAnchor].top
+      selectAnchor, //选中的锚点
+      toView: this.data.anchorlist[selectAnchor].top //锚点对应的top（scroll-top="{{toView}}"）
     })
   },
   // 获取屏幕的高度
@@ -148,11 +148,11 @@ Page({
       }
     ];
     let query = wx.createSelectorQuery().in(this);
-    query.selectAll('#comments').boundingClientRect((data) => {
-      console.log(data);
+    query.select('#comments').boundingClientRect((rect) => {
+      console.log(rect);
       let headerHeight = 45; //头部高度
-      anchorlist[1].top = data[0].top - headerHeight;
-      anchorlist[2].top = data[0].bottom - headerHeight;
+      anchorlist[1].top = rect.top - headerHeight;
+      anchorlist[2].top = rect.bottom - headerHeight;
       this.setData({
         anchorlist
       })

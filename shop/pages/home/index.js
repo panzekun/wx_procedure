@@ -1,4 +1,3 @@
-
 import request from '../../utils/request';
 const api = new request();
 Page({
@@ -64,6 +63,7 @@ Page({
     ],
     //猜你喜欢列表
     productList: [],
+    showSkeleton: true //骨架屏显示隐藏
   },
   // 定义接口参数对象 
   QueryParams: {
@@ -87,7 +87,8 @@ Page({
       // 拼接数组 
       let productList = [...this.data.productList, ...res.productList];
       this.setData({
-        productList
+        productList,
+        showSkeleton: false
       });
 
       // 计算总页码
